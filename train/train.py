@@ -1,21 +1,18 @@
 import torch
 import numpy as np
-from hestreg.train.models.resnet import resnet
+from .model import OCRModel
 from torch.utils.data import DataLoader
+from train.dataset import invoiceD
+import torch.optim as optim
 
-def train_model(model, dataset, criterian, optimizer, device):
+def train_model(criterian, device):
     batch = 64
     num_epoch = 25
-
-    labels = dataset.labels
-
-    train_dataset = [(torch.tensor(dataset.data[idx], dtype=torch.float32), torch.tensor(np.long(labels[idx][0]), dtype=torch.long)) for idx in range(len(dataset))]
-    print(len(dataset))
-
-    train_dataloader = DataLoader(train_dataset, batch_size=batch, shuffle=True)
-    model = resnet(model, train_dataloader)
-
+    dataset = invoiceD()
+    train_dataloader = DataLoader(dataset, batch_size=batch, shuffle=True)
+    model = OCRModel()
     model.to(device)
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
 
     for epoch in range(num_epoch):
         model.train()
