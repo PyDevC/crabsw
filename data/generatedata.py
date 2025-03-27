@@ -44,7 +44,7 @@ def invoice(type):
     }
 
     df = pd.DataFrame(data)
-    df.to_parquet(f"invoice{type}.py")
+    df.to_parquet(f"invoice{type}.parquet")
 
 
 if __name__ == '__main__':
