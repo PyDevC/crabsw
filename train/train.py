@@ -8,7 +8,13 @@ def train_model(dataset, criterian, device):
     batch = 64
     num_epoch = 25
     train_dataloader = DataLoader(dataset, batch_size=batch, shuffle=True)
-    model = OCRModel()
+    
+    chars = "abcdefghijklmnopqrstuvwxyz" + " "  # blank token is index 0
+    char_to_idx = {char: idx + 1 for idx, char in enumerate(chars)}  # 0 reserved for blank
+    num_classes = len(chars) + 1  # +1 for blank token
+    
+    model = OCRModel(num_classes=num_classes)
+    
     model.to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
