@@ -5,11 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
-# testing the custom dataset to identify the receipt type
-import pandas as pd
-import random
-
-# Define the expanded dataset with more entries per category
+#  this will be removed later
 expanded_data = {
     "Transportation": [
         "Flight", "Airfare", "Taxi", "Rental Car", "Train", "Shuttle", "Bus", "Uber", "Lyft", "Parking", "Fuel",
@@ -100,11 +96,8 @@ expanded_data = {
     ]
 }
 
-# Convert to DataFrame
-df = pd.DataFrame([(category, item) for category, items in expanded_data.items() for item in items], 
-                            columns=['Category', 'Item'])
+df = pd.DataFrame([(category, item) for category, items in expanded_data.items() for item in items], columns=['Category', 'Item'])
 
-# Assign labels (assuming business-related categories are labeled as 'business')
 df['Label'] = df['Category'].apply(lambda x: 'business' if x != 'Meals' else 'personal')
 
 vectorizer = TfidfVectorizer()
