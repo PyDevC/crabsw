@@ -5,7 +5,7 @@ import torch.nn.functional as F
 # Define the OCR model class
 class OCRModel(nn.Module):
     def __init__(self, num_classes, hidden_size=256):
-        super(OCRModel, self).__init__()
+        super().__init__()
         
         # CNN for feature extraction
         self.cnn = nn.Sequential(
@@ -55,7 +55,7 @@ class OCRModel(nn.Module):
         return log_probs
 
 # Example usage
-def main():
+def train():
     # Character set (example: lowercase letters + blank token)
     chars = "abcdefghijklmnopqrstuvwxyz" + " "  # blank token is index 0
     char_to_idx = {char: idx + 1 for idx, char in enumerate(chars)}  # 0 reserved for blank
@@ -83,6 +83,3 @@ def main():
     
     loss = ctc_loss(log_probs, targets, input_lengths, target_lengths)
     print(f"CTC Loss: {loss.item()}")
-
-if __name__ == "__main__":
-    main()
