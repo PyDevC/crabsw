@@ -1,8 +1,8 @@
-import fitz  # PyMuPDF
+import fitz
 import cv2
 import numpy as np
 
-def extract_images_for_model(pdf_path):
+def extract_images(pdf_path):
     extracted_images = []
 
     try:
@@ -27,14 +27,8 @@ def extract_images_for_model(pdf_path):
                 if image_cv2 is not None:
                     extracted_images.append(image_cv2)
 
-        print(f"Extracted {len(extracted_images)} images for the model.")
+        num_extracted_images = len(extracted_images)
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    return extracted_images
-
-# Example usage
-pdf_path = "example.pdf"  # Path to your input PDF
-images = extract_images_for_model(pdf_path)
-
-# Now `images` contains the NumPy arrays that can be directly fed into your model
+    return extracted_images, num_extracted_images
