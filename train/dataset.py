@@ -3,7 +3,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from torchvision.transforms import functional
 import cv2
-
+import torch
 
 class InvoiceDataset(Dataset):
     def __init__(self, input_folder, resize=None, split='train'):
@@ -35,10 +35,6 @@ class InvoiceDataset(Dataset):
 
         data_path = os.path.join(self.input_folder, self.split)
 
-
-        if not os.path.exists(data_path):
-            raise ValueError(f"Data path does not exist: {data_path}")
-
         # Process images directly instead of expecting label folders
         for img_file in os.listdir(data_path):
             img_path = os.path.join(data_path, img_file)
@@ -58,5 +54,7 @@ class InvoiceDataset(Dataset):
 
         data = np.array(data)
         labels = np.array(labels)
+        data = torch.tensor(data)
+        labels = torch.tensor(labels)
 
         return data, labels

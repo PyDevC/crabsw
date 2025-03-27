@@ -1,12 +1,12 @@
 import os
 from utils import readpdf, billprocess
-import train.ocr as ocr
+import train.ocr as ocr 
 
 root_folder = os.getcwd()
 
-for pdfs in os.walk(root_folder+r"\test"):
-    img = readpdf.extract_images(pdfs)
-    text = ocr.detect_text(img)
+for root, dir, pdfs in os.walk(root_folder+r"\test"):
+    path = os.path.join(root, pdfs[0])
+    text = ocr.detect_text(path)
     text = billprocess.parse_text_file(text)
     results = billprocess.process_bill_text_file(text)
     print("Bills with invalid recipient (does not include 'truesales farma'):")
