@@ -3,10 +3,10 @@ from datetime import datetime
 
 def parse_text_file(file_path):
     """
-    Parses a plain text file containing bill details. Assumes that each bill is separated
-    by one or more blank lines and that each field in a bill is on a separate line in the 
-    format: key: value
-    
+    Parses a plain text file containing bill details.
+    Assumes that each bill is separated by one or more blank lines
+    and that each field in a bill is on a separate line in the format: key: value
+
     :param file_path: Path to the bills text file.
     :return: A list of dictionaries, each representing one bill.
     """
@@ -20,7 +20,6 @@ def parse_text_file(file_path):
     for record in records:
         bill = {}
         for line in record.splitlines():
-            # Split each line at the first colon to separate key and value.
             if ':' in line:
                 key, value = line.split(':', 1)
                 bill[key.strip()] = value.strip()
@@ -38,14 +37,14 @@ def process_bill_text_file(file_path):
       4. Expense Filtering: Segregates bills that are not official expenses.
          Official expenses in this example are limited to: 'hotel', 'transport', or 'food'.
       5. Multi-Bill PDF Check: Flags if the text file contains multiple bills.
-    
+
     Expected keys for each bill:
       - bill_number
       - bill_date             (in a recognizable date format, e.g., YYYY-MM-DD)
       - expense_entry_date    (in a recognizable date format)
       - recipient_name
       - expense_type          (e.g., hotel, grocery, entertainment, etc.)
-    
+
     :param file_path: Path to the text file containing bill details.
     :return: A dictionary with the following keys:
              - invalid_recipients: Bills whose recipient does NOT include "truesales farma".
@@ -58,7 +57,7 @@ def process_bill_text_file(file_path):
     # Parse the text file into a list of dictionaries
     bill_records = parse_text_file(file_path)
     
-    # Create DataFrame from the list of bill records
+    # Create a DataFrame from the list of bills
     df = pd.DataFrame(bill_records)
     
     # Convert date fields to datetime objects for proper comparison
@@ -67,27 +66,26 @@ def process_bill_text_file(file_path):
             df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
     
     # Task 1: Recipient Name Validation
+    # Check if 'recipient_name' contains "truesales farma" (case-insensitive)
     df['valid_recipient'] = df['recipient_name'].str.contains("truesales farma", case=False, na=False)
-    invalid_recipients = df[~df['valid_recipient']]
+    invalid_recipients = df[~df['valid_recipient']].copy()
     
-    # Task 2: Duplicate Bill Detection based on bill_number
-    duplicate_bills = df[df.duplicated(subset=["bill_number"], keep=False)]
+    # Task 2: Duplicate Bill Detection based on 'bill_number'
+    duplicate_bills = df[df.duplicated(subset=["bill_number"], keep=False)].copy()
     
-    # Task 3: Date Comparison - flag bills where bill_date doesn't match expense_entry_date
-    mismatched_dates = df[df['bill_date'] != df['expense_entry_date']]
+    # Task 3: Date Comparison - flag bills where 'bill_date' does not match 'expense_entry_date'
+    mismatched_dates = df[df['bill_date'] != df['expense_entry_date']].copy()
     
-    # Task 4: Expense Filtering - segregate bills not related to official expenses.
+    # Task 4: Expense Filtering - identify bills not related to official expenses.
     # Define the official expense types (example: hotel, transport, food)
     official_expenses = ['hotel', 'transport', 'food']
-    # Fill any missing expense_type with an empty string
     df['expense_type'] = df['expense_type'].fillna("").astype(str)
-    # Flag as official expense if expense_type contains any of the allowed keywords
     df['official_expense'] = df['expense_type'].str.lower().apply(
-        lambda x: any(off_exp in x for off_exp in official_expenses)
+        lambda x: any(exp in x for exp in official_expenses)
     )
-    non_official_bills = df[~df['official_expense']]
+    non_official_bills = df[~df['official_expense']].copy()
     
-    # Task 5: Multi-bill PDF Check - if more than one bill is present in the file,
+    # Task 5: Multi-Bill PDF Check - if more than one bill is present in the file,
     # it likely came from a multi-bill PDF.
     multi_bill_pdf = len(df) > 1
 
