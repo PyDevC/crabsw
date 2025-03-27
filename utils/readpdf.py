@@ -19,6 +19,8 @@ def extract_images(pdf_path):
                 xref = img[0]
                 base_image = pdf_document.extract_image(xref)
                 image_bytes = base_image["image"]
+                
+                image_bytes.save("image.png")
 
                 # Convert the image bytes to a NumPy array for cv2
                 image_np = np.frombuffer(image_bytes, np.uint8)
