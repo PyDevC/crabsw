@@ -5,26 +5,22 @@ from torchvision.transforms import functional
 import cv2
 
 
-class invoiceD(Dataset):
-    def __init__(self, input_folder, resize, split='train'):
+class InvoiceDataset(Dataset):
+    def __init__(self, input_folder, resize=None, split='train'):
         super().__init__()
         self.input_folder = input_folder
         self.resize = resize
         self.split = split
-        self.data, self.labels = self.load_data()
-
+        self.data, self.labels = self.load_data()  # Load images from 'train' folder
 
     def __getitem__(self, idx):
-        image = self.train[idx]
+        image = self.data[idx]
         label = self.labels[idx]
 
-        # Apply resize if specified
         if self.resize:
             image = cv2.resize(image, self.resize)
 
-        # Convert to tensor if needed
         image = functional.to_tensor(image)
-
         return image, label
 
     def __len__(self):
@@ -37,47 +33,38 @@ class invoiceD(Dataset):
         data = []
         labels = []
 
-        # Path to the data folder based on the split (train, test, valid)
         data_path = os.path.join(self.input_folder, self.split)
+        print(f"Looking for images in: {data_path}")
 
         if not os.path.exists(data_path):
             raise ValueError(f"Data path does not exist: {data_path}")
 
-        # Get all files in the directory
-        for label_folder in os.listdir(data_path):
-            label_path = os.path.join(data_path, label_folder)
+        # Process images directly instead of expecting label folders
+        for img_file in os.listdir(data_path):
+            img_path = os.path.join(data_path, img_file)
 
-            # Skip if not a directory
-            if not os.path.isdir(label_path):
-                continue
+            if not os.path.isfile(img_path):
+                print(f"Skipping {img_file}, not a file.")
+                continue  # ✅ Move `continue` inside the condition
 
-            # Process each image in the label folder
-            for img_file in os.listdir(label_path):
-                img_path = os.path.join(label_path, img_file)
+            try:
+                image = cv2.imread(img_path)
+                if image is None:
+                    print(f"Warning: Could not load image {img_path}")
+                    continue  # ✅ Skip corrupted images
 
-                # Skip if not a file
-                if not os.path.isfile(img_path):
-                    continue
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                data.append(image)
+                labels.append("unknown")  # Use a placeholder label if none exists
+                print(f"Loaded: {img_path}")
 
-                # Load the image
-                try:
-                    image = cv2.imread(img_path)
-                    if image is None:
-                        print(f"Warning: Could not load image {img_path}")
-                        continue
+            except Exception as e:
+                print(f"Error loading {img_path}: {e}")
 
-                    # Convert BGR to RGB (OpenCV loads as BGR)
-                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        print(f"Loaded {len(data)} images for '{self.split}' split")
+        return data, labels  # ✅ Correct indentation (inside method)
 
-                    # Add to dataset
-                    data.append(image)
-                    labels.append(label_folder)  # Using folder name as label
-                except Exception as e:
-                    print(f"Error loading {img_path}: {e}")
 
-        data = np.array(data)
-        labels = np.array(labels)
-
-        print(f"Loaded {len(data)} images for {self.split} split")
-
-        return data, labels
+# Example usage
+dataset = InvoiceDataset(input_folder="C:/Users/ASUS/OneDrive/Pictures/Desktop/crabsw/data/Invoice_data.v12i.multiclass", resize=(224, 224), split="train")
+print(f"Dataset size: {len(dataset)}")
