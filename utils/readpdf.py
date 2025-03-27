@@ -103,11 +103,8 @@ def convert_pdf_to_images(
     raise RuntimeError("Could not convert PDF to images. Check dependencies.")
 
 # Example usage function
-def demonstrate_pdf_conversion():
-    print("PDF to Image Conversion Demonstration:")
-    
-    # Sample PDF path (replace with your PDF)
-    sample_pdf_path = "sample.pdf"
+def demonstrate_pdf_conversion(sample_pdf_path):
+    """Demonstrate conversion using a sample PDF"""
     
     try:
         # Convert entire PDF

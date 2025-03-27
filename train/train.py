@@ -2,13 +2,11 @@ import torch
 import numpy as np
 from .model import OCRModel
 from torch.utils.data import DataLoader
-from train.dataset import invoiceD
 import torch.optim as optim
 
-def train_model(criterian, device):
+def train_model(dataset, criterian, device):
     batch = 64
     num_epoch = 25
-    dataset = invoiceD()
     train_dataloader = DataLoader(dataset, batch_size=batch, shuffle=True)
     model = OCRModel()
     model.to(device)

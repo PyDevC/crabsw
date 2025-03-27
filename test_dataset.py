@@ -1,11 +1,9 @@
-from train.dataset import invoiceD
+from train.dataset import InvoiceDataset
 from train.train import train_model
 import torch
 from torch.nn import CrossEntropyLoss
 import torch.optim as optim
-
-
-data = invoiceD(r'data\Invoice_data.v12i.multiclass', 256)
+dataset = InvoiceDataset(r'C:\Users\ombeh\Downloads\data\Invoice_data.v12i.multiclass', resize=(224, 225), split='train')
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 cri = CrossEntropyLoss()
-model = train_model(cri,)
+model = train_model(cri, device)
