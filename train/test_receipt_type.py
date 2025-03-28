@@ -23,5 +23,7 @@ def receipt_type(receipt, model_path='', vectorizer_path=''):
     data = receipt[1]
     new_data_transformed = loaded_vectorizer.transform(data)
     predictions = loaded_model.predict(new_data_transformed)
+    flag = None
     if "personal" in predictions:
-        flag_receipt.flag_personal(receipt[1])
+        flag = flag_receipt.flag(receipt[1], "personal")
+    return flag

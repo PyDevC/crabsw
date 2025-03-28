@@ -1,4 +1,7 @@
-def flag_personal(receipt_number:str):
-    """flags that receipt is of personal expense
+def flag(receipt_number:str, flag_description):
+    """flags the receipt 
+    parameters: 
+        receipt_number
+        flag_description: choose between ["personal", "duplicate", "date mismatch"]
     """
-    return
+    return 0
