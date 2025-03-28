@@ -1,4 +1,4 @@
-from utils.flag_receipt import flag
+from utils.flag_receipt import flag, save_flags
 from data import getimages
 import utils.ocr as ocr
 from utils.read import get_receipt_attr, create_dataframe
@@ -13,6 +13,7 @@ for receipt in receipts:
     InvoiceNumber, Date, Amount, Vendor, Services = get_receipt_attr(receipt_text)
     receipt_df = create_dataframe(InvoiceNumber, Date, Amount, Vendor, Services)
     flags["personal"] = receipt_type(receipt_df.Services)
+    print(flags)
     
     if 0 in flags.values():
-        save_flags(receipt_df)
+        save_flags(receipt_df, flags)
