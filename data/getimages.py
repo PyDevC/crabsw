@@ -21,4 +21,3 @@ def get_hugging(dataset_key:str)->None:
     shape = data.shape
     return data, column_names, shape
 
-get_hugging("Ananthu01/7000_invoice_images_with_json")

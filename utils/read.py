@@ -1,5 +1,7 @@
 import pymupdf
+import cv2
 import pandas as pd
+import re
 
 def read_pdf(root):
     """reads the pdf
@@ -22,7 +24,13 @@ def read_pdf(root):
             images.append(pix)
     return images
 
-def create_dataframe(text_information):
+def create_dataframe(
+    InvoiceNumber, 
+    Date, 
+    Amount, 
+    Vendor,
+    Services
+)->pd.DataFrame:
     """converts the texts extracted from the pdf into dataframe
     DataFrame:
     InvoiceNumber:
@@ -31,11 +39,6 @@ def create_dataframe(text_information):
     Vendor: vendor name
     Services: list of the services used or the products bought
     """
-    InvoiceNumber = []
-    Date = []
-    Amount = []
-    Vendor = []
-    Services = []
 
     data = { "InvoiceNumber": InvoiceNumber,
             "Date": Date,
@@ -46,3 +49,17 @@ def create_dataframe(text_information):
 
     df = pd.DataFrame(data)
     return df
+
+def read_images(root):
+    """reads images from root folder 
+    """
+    img = cv2.imread(root)
+    return img
+
+def get_receipt_attr(receipt):
+    """creates a dataframe for receipt
+    parameters: 
+        receipt: receipt texts
+
+    returns attributes of receipt
+    """
