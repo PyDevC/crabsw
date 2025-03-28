@@ -1,0 +1,6 @@
+torch
+torchvision
+easyocr
+pandas
+scikit-learn
+datasets
