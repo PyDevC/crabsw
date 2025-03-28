@@ -9,6 +9,9 @@ def get_hugging(dataset_key:str)->None:
 
     Parameters: 
         dataset_key: It is the key that fetches dataset from huggingface
+
+    Return:
+        data, column_names, shape of the dataset that is loading from huggingface
         
     Example:
         dataset_key="katanaml-org/invoices-donut-data-v1"
